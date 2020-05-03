@@ -4,7 +4,7 @@ from math import ceil
 
 
 def get_data():
-    with open('../projeto_04/data_csv/brazil.csv', 'r') as csv_file:
+    with open('../projeto_04/data_csv/us.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
 
         date_time = []
@@ -110,8 +110,8 @@ def per_x(tmin, tmax, date):
 
 
 if __name__ == '__main__':
-    chart_brazil = plot_svg('Brazil', 'Numbers', 'Days')
+    chart_brazil = plot_svg('USA', 'Numbers', 'Days')
     print(chart_brazil)
 
-    with open("brazil.svg", "w") as f:
+    with open("us.svg", "w") as f:
         f.write(chart_brazil)
