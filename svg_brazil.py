@@ -1,11 +1,18 @@
 import csv
 from datetime import datetime
 from math import ceil
-# from math import floor
+from math import floor
 
 
 def get_data(corona_csv):
-    with open(corona_csv, 'r') as csv_file:
+    '''Lê um arquivo csv com os dados do corona virus
+    Retorna um dicionario contendo listas com:
+      casos: indice, quantidade de casos
+      deaths: indice, quantidade de mortes
+      recoveries: indice, quantide de recuperados
+      date_time: indice, datas das medições
+    '''
+    with open('../projeto_04/data_csv/brazil.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter='\t')
 
         date_time = []
@@ -28,14 +35,18 @@ def get_data(corona_csv):
 
 
 def round_dec(number, func):
+    '''Arredonda um número para o seu decimal mais próximo
+    number: número a ser arredondado
+    func: metodo de arredondamento
+    '''
     dec = 10 ** (len(str(number)) - 1)
     return func(number / dec) * dec
 
 
-def plot_svg(title, y_label, x_label, data):
+def plot_svg(title, y_label, x_label, csv_file):
     pos = {
         'y': {
-            'top': 11,  # margem superior 11
+            'top': 11,  # margem superior 11method
             'left': 5,  # margem esquerda 5
             'right': 0,  # margem direita 0
             'bottom': 95  # margem inferior 5
@@ -47,6 +58,7 @@ def plot_svg(title, y_label, x_label, data):
             'bottom': 0  # margem inferior 0
         },
     }
+
     _svg = '<svg height="100%" width="100%" viewBox="0 0 100 100" style="background-color:whitesmoke">{}</svg>'
 
     _title = f'<text text-anchor="middle" x="50" y="4" fill="black" font-size="4">{title}</text>'
@@ -58,6 +70,8 @@ def plot_svg(title, y_label, x_label, data):
     _x_axis = f'<text text-anchor="left" x="50" y="100" fill="blue" font-size="2">{x_label}</text>' \
               '<line x1="{left}" y1="{top}" x2="{right}" y2="{top}" stroke="black" stroke-width=".2" />' \
         .format(**pos['x'])
+
+    data = get_data(csv_file)
 
     max_case = int(max([v[1] for v in data['cases']]))
     min_case = int(min([v[1] for v in data['cases']]))
@@ -98,7 +112,16 @@ def plot_svg(title, y_label, x_label, data):
     return _svg.format('\n'.join([_title, _y_axis, _x_axis, *polyline]))
 
 
-data = get_data('world.csv')
-svg = plot_svg('Brasil', '', 'Datas', data)
+grafico_world = plot_svg('Mundo', 'Número', 'Datas', '../projeto_04/data_csv/world.csv')
+grafico_brasil = plot_svg('Brasil', 'Número', 'Datas', '../projeto_04/data_csv/brazil.csv')
+# grafico_us = plot_svg('EUA', 'Casos', 'Datas', 'us.csv')
+# grafico_italy = plot_svg('Italy', 'Casos', 'Datas', 'italy.csv')
+# grafico_spain = plot_svg('Brasil', 'Casos', 'Datas', 'spain.csv')
 
-print(svg)
+print(grafico_world)
+
+with open("brasil.svg", "w") as f:
+    f.write(grafico_brasil)
+
+with open("mundo.svg", "w") as f:
+    f.write(grafico_world)
